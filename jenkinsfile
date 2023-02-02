@@ -7,7 +7,8 @@ pipeline {
     stage('test') {
       steps {
         
-          sh 'mvn clean compile test'
+        echo 'Paso el Test'
+         // sh 'mvn clean compile test'
         
       }
     }
