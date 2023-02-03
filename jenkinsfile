@@ -8,7 +8,7 @@ pipeline {
           }  */
         stages {
 
-        stage("Source") {
+        stage("Source GIT") {
           agent any
           steps {
               git branch: 'main', url: 'https://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@github.com/geanc22/Devops-final.git'
@@ -24,7 +24,7 @@ pipeline {
             }
           }
 
-          stage("SonarQube Analysis") {
+          stage("SonarQube Analisis") {
             agent any  
             steps {
               sh 'mvn sonar:sonar'
