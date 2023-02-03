@@ -1,30 +1,78 @@
 pipeline {
-  agent any
+        agent any
+       tools {
+             maven 'maven_3_8_7'
+        }  
+        /*  tools {
+             maven 'M3'
+          }  */
+        stages {
 
+        stage("Source") {
+          agent any
+          steps {
+              git branch: 'main', url: 'https://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@github.com/geanc22/Devops-final.git'
+              //mvnHome = tool 'M3'
+          }
+        }
 
-  stages {
-    
-    stage('test') {
-      steps {
+       
+          stage("Build") {
+            agent any
+            steps {
+                sh 'mvn -B -DskipTests clean package'
+            }
+          }
+
+          stage("SonarQube Analysis") {
+            agent any  
+            steps {
+              sh 'mvn sonar:sonar'
+            }
+          }
+
+          stage('Approve Deployment') {
+              agent any
+              input{
+                   message "Do you want to proceed for deployment?"
+                      }
+              steps {
+                  //Add deploy steps & Alerts below
+                  sh 'echo "Deploying into Server"' 
+
+                }
+          } 
+          
+        } // stage
         
-        echo 'Paso el Test'
-         // sh 'mvn clean compile test'
+        post {
+
+    aborted {
+
+      echo "Sending message to Slack"
+      slackSend (color: "${env.SLACK_COLOR_WARNING}",
+                 channel: "${params.SLACK_CHANNEL_2}",
+                 message: "*ABORTED:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} by ${env.USER_ID}\n More info at: ${env.BUILD_URL}")
+    } // aborted
+
+    failure {
+
+      echo "Sending message to Slack"
+      slackSend (color: "${env.SLACK_COLOR_DANGER}",
+                 channel: "${params.SLACK_CHANNEL_2}",
+                 message: "*FAILED:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} by ${env.USER_ID}\n More info at: ${env.BUILD_URL}")
+    } // failure
+
+    success {
+      echo "Sending message to Slack"
+      slackSend (color: "${env.SLACK_COLOR_GOOD}",
+                 channel: "${params.SLACK_CHANNEL_1}",
+                 message: "*SUCCESS:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} by ${env.USER_ID}\n More info at: ${env.BUILD_URL}")
+    } // success
+
+  } // post
+        
+        
+        
         
       }
-    }
-
-    stage('Build application') {
-      steps {
-          echo 'mvn clean install -Dmaven.test.skip=true'
-         
-      }
-    }
-
-    stage('prod') {
-      steps {
-        echo 'creando a produccion'
-      }
-    }
-  }
-
-}
