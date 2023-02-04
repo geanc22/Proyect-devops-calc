@@ -11,7 +11,7 @@ pipeline {
         stage("Source GIT") {
           agent any
           steps {
-              git branch: 'main', url: 'https://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@github.com/geanc22/Devops-final.git'
+              git branch: 'main', url: 'https://github.com/geanc22/Devops-final.git'
               //mvnHome = tool 'M3'
           }
         }
