@@ -11,7 +11,7 @@ pipeline {
         stage("Source GIT") {
           agent any
           steps {
-              git branch: 'test', url: 'https://github.com/geanc22/Devops-final.git'
+              git branch: 'test', url: 'https://github.com/geanc22/Proyect-devops-calc.git'
               //mvnHome = tool 'M3'
           }
         }
